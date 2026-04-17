@@ -292,19 +292,6 @@ For deployment in the target VR environment, \textbf{Fast-1B is the recommended 
 
 Key limitations include single-seed runs (no variance estimates), in-distribution evaluation only, and a comparison design in which rank and layer count co-vary (see Section~\ref{sec:limitations}). A controlled rank sweep across multiple seeds and model families is needed to confirm whether the crossover is statistically robust and to identify its mechanism.
 
-\section*{Appendix}
-
-\subsection{Repository Link}
-\noindent \url{https://github.com/abarros6/small-bear}
-
-\subsection{Group Member Contributions}
-\noindent \textbf{Anthony Barros} and \textbf{Kelsey Kloosterman}.
-
-\subsection{Claude Transcripts}
-% [TODO: specify Claude version and session details]
-\noindent [To be added.]
-
-\clearpage
 \begin{thebibliography}{99}
 
 \bibitem{zhou2023lima}
@@ -344,5 +331,48 @@ D.~Biderman, J.~G.~Ortiz, J.~Portes, M.~Paul, P.~Greengard, C.~Jennings, D.~King
 F.~Pedregosa et al., ``Scikit-learn: Machine Learning in Python,'' \textit{J. Machine Learning Research}, vol.~12, pp.~2825--2830, 2011.
 
 \end{thebibliography}
+
+\clearpage
+\section*{Appendix}
+
+\subsection{Repository Link}
+\noindent \url{https://github.com/abarros6/small-bear}
+
+\subsection{Group Member Contributions}
+\noindent \textbf{Anthony Barros} and \textbf{Kelsey Kloosterman}.
+
+\subsection{Claude Transcripts}
+
+All synthetic data was generated using Claude Opus 4.6 with extended thinking mode via Claude.ai Project Spaces (March 2026). Two separate project spaces were created: one for training data and one for validation data. Each project space had Victoria Hospital's publicly available patient and family guide attached as a grounding artifact. Within each space, five dedicated chats were run --- one per category --- to maintain context isolation across topics. Training scripts and evaluation code were developed using Claude Code (claude-sonnet-4-6, v2.1.74).
+
+\subsubsection*{Training Data Generation}
+
+\noindent\textbf{System prompt (summarized):} Generate high-quality synthetic training data for two pediatric-facing adapter models (ages 5--11 and 12--18) for deployment in a virtual recreation of Victoria Hospital in London, Ontario. Following the LIMA hypothesis, produce a small set of carefully curated, high-quality examples rather than a large noisy corpus --- 100 examples per category per adapter, 500 total per adapter. Ground all responses in the attached Victoria Hospital reference artifacts.
+
+\noindent\textbf{Output format:}
+\begin{verbatim}
+{"instruction": "...", "response": "...",
+ "role": "5-11|12-18", "category": "..."}
+\end{verbatim}
+
+\noindent\textbf{Hard safety rules enforced at generation time:} never imply a diagnosis; never recommend medications or treatments; never use language inappropriate for the target age range; always redirect medical or emergency questions to a healthcare professional or parent/guardian.
+
+\noindent\textbf{Per-category prompts (training):}
+\begin{itemize}
+  \item \textit{emotional\_reassurance}: ``Generate 200 training examples for the emotional\_reassurance category. Ensure every example that involves a situation requiring medical attention redirects to a nurse, doctor, or parent/guardian. Produce 100 examples tagged `role': `5-11' and 100 tagged `role': `12-18'.''
+  \item \textit{faqs\_general\_curiosity}: ``Generate 200 training examples for the faqs\_general\_curiosity category. Use the attached Victoria Hospital reference artifacts where relevant. Produce 100 per age group.''
+  \item \textit{hospital\_rules\_and\_routines}: ``Generate 200 training examples for the hospital\_rules\_and\_routines category. Prioritize the attached reference artifacts as the source of truth for policies, schedules, and routines. Produce 100 per age group.''
+  \item \textit{who\_are\_these\_people}: ``Generate 200 training examples for the who\_are\_these\_people category. Use the attached reference artifacts to ground roles and descriptions in this specific facility. Produce 100 per age group.''
+  \item \textit{what\_to\_expect}: ``Generate 200 training examples for the what\_to\_expect category. Use the attached reference artifacts to ground responses in this facility. Produce 100 per age group.''
+\end{itemize}
+
+\subsubsection*{Validation Data Generation}
+
+\noindent\textbf{System prompt (summarized):} Generate high-quality synthetic validation data independent from the training set. The validation set represents 10\% of training data --- 10 examples per age group per category, 100 examples total. Validation examples must not reuse or closely mirror training examples. Every example must meet a gold standard of quality; a weak validation example is worse than no example.
+
+\noindent\textbf{Per-category prompts (validation):}
+\begin{itemize}
+  \item Each of the five categories: ``Generate 20 validation examples for the \textit{[category]} category. Produce 10 examples tagged `role': `5-11' and 10 tagged `role': `12-18'. Output each example as a JSON object on its own line.''
+\end{itemize}
 
 \end{document}
