@@ -94,7 +94,7 @@ The "instruction" key holds the user's question, and the "response" key holds th
 
 One important thing to note in this dataset is the lack of a system prompt. This is a deliberate choice when desigining both the dataset and the project at large- as this guide will be part of the larger Virtual Hospital project, we must ensure it will fit smoothly with the rest of the project. As the team working on the VR and spatial navigation aspects of the Virtual Hospital already relies on their own system prompt for navigation, refraining from including our own system prompt avoids any potential conflicts.
 
-In addition to this, when using a system prompt, we risk the model simply learning the prompt, and becoming overly reliant on it. When the system prompt is removed, this could lead to a degradation in both quality and the needed tone in the model's responses (get citation for this). By avoiding the use of a system prompt in the first place, we can ensure that the model is learning the needed tone in its weights, and not just following the prompt.
+In addition to this, when using a system prompt, we risk the model simply learning the prompt, and becoming overly reliant on it. When the system prompt is removed, this could lead to a degradation in both quality and the needed tone in the model's responses. By avoiding the use of a system prompt in the first place, we can ensure that the model is learning the needed tone in its weights, and not just following the prompt.
 
 \section{Methodology}\label{sec:methodology}
 
